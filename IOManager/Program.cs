@@ -80,7 +80,7 @@ namespace IOManager
             }, processingOptions); 
 
             // 4. Writes each file into memory.
-            var printFileName = new ActionBlock<GeneratedTestClass>(async testClass =>
+            var writeGeneratedFile = new ActionBlock<GeneratedTestClass>(async testClass =>
             {
                 string fullpath = Path.Combine(config.output_path, testClass.Name);
                 using (StreamWriter writer = new StreamWriter(fullpath))
@@ -91,10 +91,9 @@ namespace IOManager
 
             getFileNames.LinkTo(loadFile);
             loadFile.LinkTo(generateTestClass);
-            generateTestClass.LinkTo(printFileName);
+            generateTestClass.LinkTo(writeGeneratedFile);
 
             getFileNames.Post(config.path_to_files);
-
  
             Console.ReadKey();
         }
