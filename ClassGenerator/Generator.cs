@@ -12,9 +12,13 @@ namespace ClassGenerator
     public static class Generator
     {
 
-        private static int maxInputCount;
-        private static int maxProcessingCount;
-        private static int maxOutputCount;
+        public static int maxInputCount { get; set; } = 1;
+        public static int maxProcessingCount { get; set; } = 1;
+        public static int maxOutputCount { get; set; } = 1;
+
+        
+        
+
 
         public static Task<string> Generate(string code)
         {

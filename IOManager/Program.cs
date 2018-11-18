@@ -8,6 +8,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System.Threading.Tasks.Dataflow;
 using System.IO;
 using ClassGenerator;
+using System.Configuration;
 
 namespace IOManager
 {
@@ -16,52 +17,72 @@ namespace IOManager
         static void Main(string[] args)
         {
 
-            // Getting user input
+            // Getting Configuration
+            ConfigReader config;
 
-            string classes_path, output_path;
-
-            do
+            try
             {
-                Console.WriteLine("Enter the path to the folder containing classes: ");
-                classes_path = Console.ReadLine();
-            } while (!Directory.Exists(classes_path));
-
-            do
+                config = new ConfigReader();
+            }
+            catch (ArgumentException e)
             {
-
-                Console.WriteLine("Enter the path to the output folder: ");
-                output_path = Console.ReadLine();
-            } while (!Directory.Exists(output_path));
+                Console.WriteLine(e.Message);
+                return;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("An error occured reading a configuration file");
+                return;
+            }
 
 
             // Defining Dataflow Pipeline (4 blocks)
-            
-            // Get file names from user input directory
+
+            // set up dataflow parameters
+
+            ExecutionDataflowBlockOptions inputOptions = new ExecutionDataflowBlockOptions
+            {
+                MaxDegreeOfParallelism = config.input_parallelism_degree
+            };
+
+            ExecutionDataflowBlockOptions processingOptions = new ExecutionDataflowBlockOptions
+            {
+                MaxDegreeOfParallelism = config.processing_parallelism_degree
+            };
+
+            ExecutionDataflowBlockOptions outputOptions = new ExecutionDataflowBlockOptions
+            {
+                MaxDegreeOfParallelism = config.output_parallelism_degree
+            };
+
+
+
+            // 1. Get file names from user input directory
             var getFileNames = new TransformManyBlock<string, string>(path =>
             {
                return Directory.GetFiles(path);
             });
 
-            // Asynchroneously loads each file into memory
+            // 2. Asynchroneously loads each file into memory
             var loadFile = new TransformBlock<string, string>(async filename =>
             {
                 using (StreamReader reader = new StreamReader(filename))
                 {
                     return await reader.ReadToEndAsync();
                 }
-            });
+            }, inputOptions);
 
-            // Generates test class code for each file
+            // 3. Generates test class code for each file
             var generateTestClass = new TransformBlock<string, string>(async classText =>
             {
                 return await Generator.Generate(classText);
-            }); 
+            }, processingOptions); 
 
-            // Writes each file into memory.
+            // 4. Writes each file into memory.
             var printFileName = new ActionBlock<string>(name =>
             {
                 Console.WriteLine(name);
-            });
+            }, outputOptions);
 
             getFileNames.LinkTo(loadFile);
             loadFile.LinkTo(generateTestClass);
