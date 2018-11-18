@@ -80,9 +80,14 @@ namespace IOManager
             }, processingOptions); 
 
             // 4. Writes each file into memory.
-            var printFileName = new ActionBlock<string>(name =>
+            var printFileName = new ActionBlock<GeneratedTestClass>(async testClass =>
             {
-                Console.WriteLine(name);
+
+                string fullpath = Path.Combine(config.output_path, testClass.Name);
+                using (StreamWriter writer = new StreamWriter(fullpath))
+                {
+                    await writer.WriteAsync(testClass.Code);
+                }
             }, outputOptions);
 
             getFileNames.LinkTo(loadFile);

@@ -9,6 +9,10 @@ namespace ClassGenerator
     public class GeneratedTestClass
     {
 
+        public void Writesomething() { }
+
+        private int DoSomething() { return 2; }
+
         public string Name { get; }
         public string Code { get; }
 
