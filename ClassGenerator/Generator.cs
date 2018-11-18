@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
@@ -12,7 +13,32 @@ namespace ClassGenerator
     public static class Generator
     {
 
-        
+        private static SyntaxList<UsingDirectiveSyntax> getTemplateUsing(string namespaceName)
+        {
+            List<UsingDirectiveSyntax> template = new List<UsingDirectiveSyntax>
+            {
+                UsingDirective(IdentifierName("System")),
+                UsingDirective(QualifiedName(
+                    IdentifierName("System"),
+                    IdentifierName("Linq"))),
+                UsingDirective(QualifiedName(
+                    QualifiedName(
+                        IdentifierName("System"), IdentifierName("Collections")),
+                        IdentifierName("Generic"))),
+                UsingDirective(
+                    QualifiedName(
+                        QualifiedName(
+                            QualifiedName(
+                                IdentifierName("Microsoft"),
+                                IdentifierName("VisualStudio")),
+                            IdentifierName("TestTools")),
+                    IdentifierName("UnitTesting"))),
+                UsingDirective(IdentifierName(namespaceName))
+            };
+
+            return List(template);
+
+        }
 
         // method that generates test classes for each class found in code
         public static Task<List<GeneratedTestClass>> Generate(string code)
@@ -43,10 +69,11 @@ namespace ClassGenerator
                     // declare namespace
                     NamespaceDeclarationSyntax generated_namespace = NamespaceDeclaration(
                         QualifiedName(
-                            IdentifierName(className), IdentifierName("_Test")));
+                            IdentifierName(className), IdentifierName("Test")));
 
+                    var template_usings = getTemplateUsing(clsNamespace);
 
-                    
+                    var template_methods = getTemplateMethods(publicMethods);
 
 
                     
