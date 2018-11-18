@@ -27,11 +27,13 @@ namespace IOManager
             catch (ArgumentException e)
             {
                 Console.WriteLine(e.Message);
+                Console.ReadKey();
                 return;
             }
             catch (Exception e)
             {
                 Console.WriteLine("An error occured reading a configuration file");
+                Console.ReadKey();
                 return;
             }
 
@@ -88,8 +90,7 @@ namespace IOManager
             loadFile.LinkTo(generateTestClass);
             generateTestClass.LinkTo(printFileName);
 
-
-            getFileNames.Post(classes_path);
+            getFileNames.Post(config.path_to_files);
 
  
             Console.ReadKey();

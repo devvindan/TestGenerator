@@ -18,6 +18,10 @@ namespace IOManager
 
         public ConfigReader()
         {
+
+
+
+
             try
             {
                 path_to_files = ConfigurationManager.AppSettings["PathToFiles"];
@@ -25,7 +29,9 @@ namespace IOManager
                 input_parallelism_degree = Int32.Parse(ConfigurationManager.AppSettings["InputParallelismDegree"]);
                 output_parallelism_degree = Int32.Parse(ConfigurationManager.AppSettings["OutputParallelismDegree"]);
                 processing_parallelism_degree = Int32.Parse(ConfigurationManager.AppSettings["ProcessingParallelismDegree"]);
-            catch { 
+            }
+            catch
+            {
                 throw new ArgumentException("Error reading values from configuration file.");
             }
 
