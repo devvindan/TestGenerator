@@ -202,7 +202,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GeneratedTestClassTests.cs" />
     <Compile Include="GeneratorUnitTests.cs" />
+    <Compile Include="MyClassTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

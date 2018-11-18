@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ClassGenerator;
 
-namespace GeneratedTestClass.Test
+namespace GeneratedTestClassTest
 {
     [TestClass]
     public class GeneratedTestClassTests
