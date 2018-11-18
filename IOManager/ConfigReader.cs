@@ -18,10 +18,6 @@ namespace IOManager
 
         public ConfigReader()
         {
-
-
-
-
             try
             {
                 path_to_files = ConfigurationManager.AppSettings["PathToFiles"];

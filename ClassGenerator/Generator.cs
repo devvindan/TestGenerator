@@ -12,17 +12,15 @@ namespace ClassGenerator
     public static class Generator
     {
 
-        public static int maxInputCount { get; set; } = 1;
-        public static int maxProcessingCount { get; set; } = 1;
-        public static int maxOutputCount { get; set; } = 1;
+        public static Task<List<GeneratedTestClass>> Generate(string code)
+        {        
 
-        
-        
+            return Task.Run(() => {
 
+                List<GeneratedTestClass> generatedClasses = null;
+                return generatedClasses;
 
-        public static Task<string> Generate(string code)
-        {
-            return Task.Run(() => { return code + "generated_test_class"; });
+            });
         }
 
     }

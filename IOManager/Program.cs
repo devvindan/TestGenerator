@@ -41,7 +41,6 @@ namespace IOManager
             // Defining Dataflow Pipeline (4 blocks)
 
             // set up dataflow parameters
-
             ExecutionDataflowBlockOptions inputOptions = new ExecutionDataflowBlockOptions
             {
                 MaxDegreeOfParallelism = config.input_parallelism_degree
@@ -74,8 +73,8 @@ namespace IOManager
                 }
             }, inputOptions);
 
-            // 3. Generates test class code for each file
-            var generateTestClass = new TransformBlock<string, string>(async classText =>
+            // 3. Generates test classes code for each file (1 to 1 or many)
+            var generateTestClass = new TransformManyBlock<string, GeneratedTestClass>(async classText =>
             {
                 return await Generator.Generate(classText);
             }, processingOptions); 
