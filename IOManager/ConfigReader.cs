@@ -8,7 +8,7 @@ using System.Configuration;
 
 namespace IOManager
 {
-    class ConfigReader
+    public class ConfigReader
     {
         public readonly string path_to_files;
         public readonly string output_path;
