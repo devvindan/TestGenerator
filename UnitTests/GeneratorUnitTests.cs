@@ -148,6 +148,39 @@ namespace UnitTests
         }
 
 
+        [TestMethod]
+        public void TestMethodNames()
+        {
+            IEnumerable<MethodDeclarationSyntax> methodsOne = classOneRoot.DescendantNodes().OfType<MethodDeclarationSyntax>();
+
+            Assert.AreEqual(1, methodsOne.Where((method) => method.Identifier.ToString() == "MyMethodTest").Count());
+
+            IEnumerable<MethodDeclarationSyntax> methodsTwo = classTwoRoot.DescendantNodes().OfType<MethodDeclarationSyntax>();
+
+            Assert.AreEqual(1, methodsTwo.Where((method) => method.Identifier.ToString() == "WritesomethingTest").Count());
+            Assert.AreEqual(1, methodsTwo.Where((method) => method.Identifier.ToString() == "LolkekCheburekTest").Count());
+
+        }
+
+        [TestMethod]
+        public void TestDefaultUsing()
+        {
+            Assert.AreEqual(1, classOneRoot.Usings.Where((usingEntry) => usingEntry.Name.ToString() == "Microsoft.VisualStudio.TestTools.UnitTesting").Count());
+            Assert.AreEqual(1, classOneRoot.Usings.Where((usingEntry) => usingEntry.Name.ToString() == "System.Linq").Count());
+            Assert.AreEqual(1, classOneRoot.Usings.Where((usingEntry) => usingEntry.Name.ToString() == "System").Count());
+            Assert.AreEqual(1, classOneRoot.Usings.Where((usingEntry) => usingEntry.Name.ToString() == "System.Collections.Generic").Count());
+            Assert.AreEqual(1, classOneRoot.Usings.Where((usingEntry) => usingEntry.Name.ToString() == "MyTestSpace").Count());
+
+            Assert.AreEqual(1, classTwoRoot.Usings.Where((usingEntry) => usingEntry.Name.ToString() == "Microsoft.VisualStudio.TestTools.UnitTesting").Count());
+            Assert.AreEqual(1, classTwoRoot.Usings.Where((usingEntry) => usingEntry.Name.ToString() == "System.Linq").Count());
+            Assert.AreEqual(1, classTwoRoot.Usings.Where((usingEntry) => usingEntry.Name.ToString() == "System").Count());
+            Assert.AreEqual(1, classTwoRoot.Usings.Where((usingEntry) => usingEntry.Name.ToString() == "System.Collections.Generic").Count());
+            Assert.AreEqual(1, classTwoRoot.Usings.Where((usingEntry) => usingEntry.Name.ToString() == "ClassGenerator").Count());
+
+        }
+
+
+
     }
 
 }
