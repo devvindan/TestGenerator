@@ -16,20 +16,32 @@ namespace IOManager
         public readonly int output_parallelism_degree;
         public readonly int processing_parallelism_degree;
 
-        public ConfigReader()
+        public ConfigReader(bool loadParams = true,
+            string input = " ", string output = " ", int ip = -5, int op = -5, int pp = -5)
         {
-            try
+            if (loadParams)
             {
-                path_to_files = ConfigurationManager.AppSettings["PathToFiles"];
-                output_path = ConfigurationManager.AppSettings["OutputPath"];
-                input_parallelism_degree = Int32.Parse(ConfigurationManager.AppSettings["InputParallelismDegree"]);
-                output_parallelism_degree = Int32.Parse(ConfigurationManager.AppSettings["OutputParallelismDegree"]);
-                processing_parallelism_degree = Int32.Parse(ConfigurationManager.AppSettings["ProcessingParallelismDegree"]);
-            }
-            catch
+                try
+                {
+                    path_to_files = ConfigurationManager.AppSettings["PathToFiles"];
+                    output_path = ConfigurationManager.AppSettings["OutputPath"];
+                    input_parallelism_degree = Int32.Parse(ConfigurationManager.AppSettings["InputParallelismDegree"]);
+                    output_parallelism_degree = Int32.Parse(ConfigurationManager.AppSettings["OutputParallelismDegree"]);
+                    processing_parallelism_degree = Int32.Parse(ConfigurationManager.AppSettings["ProcessingParallelismDegree"]);
+                }
+                catch
+                {
+                    throw new ArgumentException("Error reading values from configuration file.");
+                }
+            } else
             {
-                throw new ArgumentException("Error reading values from configuration file.");
+                path_to_files = input;
+                output_path = output;
+                input_parallelism_degree = ip;
+                output_parallelism_degree = op;
+                processing_parallelism_degree = pp;
             }
+ 
 
 
             if (!Directory.Exists(path_to_files))
