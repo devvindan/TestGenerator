@@ -34,27 +34,32 @@ namespace UnitTests
             ConfigReader config = new ConfigReader();
 
             string sourceFilesDirectory = config.path_to_files;
-            string generatedFilesDirectory = config.output_path;
 
             classOneName = "MyClassTests.cs";
             classTwoName = "GeneratedTestClassTests.cs";
 
-            string pathClassOne = Path.Combine(generatedFilesDirectory, classOneName);
-            string pathClassTwo = Path.Combine(generatedFilesDirectory, classTwoName);
-
             string souceClassPath = Path.Combine(sourceFilesDirectory, "MyTestClass.txt");
 
-
-            classOneCode = File.ReadAllText(pathClassOne);
-            classTwoCode = File.ReadAllText(pathClassTwo);
             sourceClassCode = File.ReadAllText(souceClassPath);
-
-            classOneRoot = CSharpSyntaxTree.ParseText(classOneCode).GetCompilationUnitRoot();
-            classTwoRoot = CSharpSyntaxTree.ParseText(classTwoCode).GetCompilationUnitRoot();
 
             generatedClasses = Generator.Generate(sourceClassCode).Result;
 
+            foreach (var genClass in generatedClasses)
+            {
+                if (genClass.Name == classOneName)
+                {
+                    classOneCode = genClass.Code;
+                }
 
+                if (genClass.Name == classTwoName)
+                {
+                    classTwoCode = genClass.Code;
+                }
+
+            }
+
+            classOneRoot = CSharpSyntaxTree.ParseText(classOneCode).GetCompilationUnitRoot();
+            classTwoRoot = CSharpSyntaxTree.ParseText(classTwoCode).GetCompilationUnitRoot();
 
         }
 
@@ -165,18 +170,15 @@ namespace UnitTests
         [TestMethod]
         public void TestDefaultUsing()
         {
-            Assert.AreEqual(1, classOneRoot.Usings.Where((usingEntry) => usingEntry.Name.ToString() == "Microsoft.VisualStudio.TestTools.UnitTesting").Count());
-            Assert.AreEqual(1, classOneRoot.Usings.Where((usingEntry) => usingEntry.Name.ToString() == "System.Linq").Count());
-            Assert.AreEqual(1, classOneRoot.Usings.Where((usingEntry) => usingEntry.Name.ToString() == "System").Count());
-            Assert.AreEqual(1, classOneRoot.Usings.Where((usingEntry) => usingEntry.Name.ToString() == "System.Collections.Generic").Count());
-            Assert.AreEqual(1, classOneRoot.Usings.Where((usingEntry) => usingEntry.Name.ToString() == "MyTestSpace").Count());
+            var clsOneUsings = classOneRoot.Usings.Select(x => x.Name.ToString()).ToArray();
+            var clsTwoUsings = classTwoRoot.Usings.Select(x => x.Name.ToString()).ToArray();
 
-            Assert.AreEqual(1, classTwoRoot.Usings.Where((usingEntry) => usingEntry.Name.ToString() == "Microsoft.VisualStudio.TestTools.UnitTesting").Count());
-            Assert.AreEqual(1, classTwoRoot.Usings.Where((usingEntry) => usingEntry.Name.ToString() == "System.Linq").Count());
-            Assert.AreEqual(1, classTwoRoot.Usings.Where((usingEntry) => usingEntry.Name.ToString() == "System").Count());
-            Assert.AreEqual(1, classTwoRoot.Usings.Where((usingEntry) => usingEntry.Name.ToString() == "System.Collections.Generic").Count());
-            Assert.AreEqual(1, classTwoRoot.Usings.Where((usingEntry) => usingEntry.Name.ToString() == "ClassGenerator").Count());
+            var testoneUsings = new string[] { "Microsoft.VisualStudio.TestTools.UnitTesting", "System.Linq", "System", "System.Collections.Generic", "MyTestSpace" };
+            var testtwoUsings = new string[] { "Microsoft.VisualStudio.TestTools.UnitTesting", "System.Linq", "System", "System.Collections.Generic", "ClassGenerator" };
 
+
+            CollectionAssert.AreEquivalent(clsOneUsings, testoneUsings);
+            CollectionAssert.AreEquivalent(clsTwoUsings, testtwoUsings);
         }
 
 

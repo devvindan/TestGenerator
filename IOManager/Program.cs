@@ -37,7 +37,6 @@ namespace IOManager
                 return;
             }
 
-
             // Defining Dataflow Pipeline (4 blocks)
 
             // set up dataflow parameters
@@ -94,8 +93,11 @@ namespace IOManager
             generateTestClass.LinkTo(writeGeneratedFile);
 
             getFileNames.Post(config.path_to_files);
- 
-            Console.ReadKey();
+            /*
+            getFileNames.Complete();
+            writeGeneratedFile.Completion();
+            */
         }
     }
 }
+ 
